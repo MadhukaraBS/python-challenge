@@ -2,11 +2,7 @@ import sys
 import csv
 
 #  Initialize all variables used below. Not needed for Python
-#  but is a good practice
-
-MONTH_COLUMN = 0
-PL_COLUMN = 1
-
+#  but is a good practice?
 cand_vote_count = {}
 total_votes = 0
 
