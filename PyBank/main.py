@@ -1,13 +1,4 @@
-# To be removed
-# a = 3.564
-# print("a = %.2f" % a)
-# print("a = \n", a)
-# # writer = csv.writer(outfile)
-# writer.writerow(["Title", "Course Price", "Subscribers", "Reviews Left"])
-#_, title,_,_,price,numSubscribers,numReviews, _,_,_, _ = row
-#writer.writerow([title, price, numSubscribers, numReviews])
-
-
+import sys
 import csv
 
 #  Initialize all variables used below. Not needed for Python
@@ -27,6 +18,7 @@ PL_COLUMN = 1
 
 with open("budget_data.csv", 'r', encoding="utf8") as infile, \
      open("budget_analysis.txt", 'w', newline=None) as outfile:
+       f_handle = [outfile, sys.stdout]
        reader = csv.reader(infile, delimiter=",")
 
        # Read the header row first (skip this step if there is no header)
@@ -63,26 +55,15 @@ with open("budget_data.csv", 'r', encoding="utf8") as infile, \
        if total_months > 1:
          avg_change = total_change/(total_months - 1)
 
-       print("Financial Analysis", file=outfile)
-       print("---------------------------", file=outfile)
-       print(f"Total months: {total_months}", file=outfile)
-       print(f"Total: ${total_pl}", file=outfile)
-       print("Average Change : $%.2f" % avg_change, file=outfile)
-       print(f"Greatest Increase in Profits: {gr_inc_month} ${gr_increase}", file=outfile)
-       if (gr_decrease < 0):
-         print(f"Greatest Decrease in Profits: {gr_dec_month} (${gr_decrease})", file=outfile)
-       else:
-         print(f"Greatest Decrease in Profits: {gr_dec_month} ${gr_decrease}", file=outfile)
-
-       print("Financial Analysis")
-       print("---------------------------")
-       print(f"Total months: {total_months}")
-       print(f"Total: ${total_pl}")
-       print("Average Change : $%.2f" % avg_change)
-       print(f"Greatest Increase in Profits: {gr_inc_month} ${gr_increase}")
-       if (gr_decrease < 0):
-         print(f"Greatest Decrease in Profits: {gr_dec_month} (${gr_decrease})")
-       else:
-         print(f"Greatest Decrease in Profits: {gr_dec_month} ${gr_decrease}")
-
+       for curr_file in f_handle:
+         print("Financial Analysis", file=curr_file)
+         print("---------------------------", file=curr_file)
+         print(f"Total months: {total_months}", file=curr_file)
+         print(f"Total: ${total_pl}", file=curr_file)
+         print("Average Change : $%.2f" % avg_change, file=curr_file)
+         print(f"Greatest Increase in Profits: {gr_inc_month} ${gr_increase}", file=curr_file)
+         if (gr_decrease < 0):
+           print(f"Greatest Decrease in Profits: {gr_dec_month} (${gr_decrease})", file=curr_file)
+         else:
+           print(f"Greatest Decrease in Profits: {gr_dec_month} ${gr_decrease}", file=curr_file)
 
