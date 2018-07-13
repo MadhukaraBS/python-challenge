@@ -2,7 +2,7 @@ import sys
 import csv
 
 #  Initialize all variables used below. Not needed for Python
-#  but is a good practice
+#  but is it a good practice?
 
 total_months = 0
 total_pl = 0
@@ -16,6 +16,7 @@ gr_decrease = 0
 MONTH_COLUMN = 0
 PL_COLUMN = 1
 
+# Open files for data reading and storing output
 with open("budget_data.csv", 'r', encoding="utf8") as infile, \
      open("budget_analysis.txt", 'w', newline=None) as outfile:
        f_handle = [outfile, sys.stdout]
@@ -46,15 +47,14 @@ with open("budget_data.csv", 'r', encoding="utf8") as infile, \
              gr_decrease = change
              gr_dec_month = row[MONTH_COLUMN]
            prev_month_pl = curr_month_pl
-         # else:
+         # else: #Debug print statement only
            # print("Empty line")
-
-       # Verify all these in Excel sheet
 
        # Avoid division by zero
        if total_months > 1:
          avg_change = total_change/(total_months - 1)
 
+       # Print on each file descriptor
        for curr_file in f_handle:
          print("Financial Analysis", file=curr_file)
          print("---------------------------", file=curr_file)
