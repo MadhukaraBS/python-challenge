@@ -2,10 +2,11 @@ import sys
 import csv
 
 #  Initialize all variables used below. Not needed for Python
-#  but is a good practice?
+#  but is it a good practice?
 cand_vote_count = {}
 total_votes = 0
 
+# open data file and output file
 with open("election_data.csv", 'r', encoding="utf8") as infile, \
      open("election_results.txt", 'w', newline=None) as outfile:
        f_handle = [outfile, sys.stdout]
@@ -19,7 +20,6 @@ with open("election_data.csv", 'r', encoding="utf8") as infile, \
          if row:
            total_votes += 1
            name = row[2]
-           #if cand_vote_count.get(name) == None:
            if not name in cand_vote_count:
              cand_vote_count[name] = 1
            else:
@@ -28,6 +28,7 @@ with open("election_data.csv", 'r', encoding="utf8") as infile, \
            # print("Empty line")
 
        winner_cnt = 0
+       # Print results to file descriptors
        for curr_file in f_handle:
          print("Election Results", file=curr_file)
          print("---------------------", file=curr_file)
