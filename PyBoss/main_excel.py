@@ -71,31 +71,39 @@ def gen_row(emp_id, name, fmt_date, ssn_part, state):
 #  open data file and output file
 #  Open XLSX file
 wb = openpyxl.load_workbook('employee_data.xlsx')
+wb_out = openpyxl.Workbook()
 sheet = wb['employee_data']
+sheet_out = wb_out.create_sheet('employee_data')
 #  Following API is deprecated
 #  sheet = wb.get_sheet_by_name('employee_data')
 
-#  Without newline="" csvwriter writes \r\r\n for every \n
-with open("processed_xlsx_emp_data.csv", 'w', newline="") as outfile:
-       writer = csv.writer(outfile)
+#  Write XLSX header only if the current file has atleast one input row
+if sheet.max_row > 1:
+  sheet_out.cell(row=1, column=1).value = "Emp ID"
+  sheet_out.cell(row=1, column=2).value = "First Name"
+  sheet_out.cell(row=1, column=3).value = "Last Name"
+  sheet_out.cell(row=1, column=4).value = "DOB"
+  sheet_out.cell(row=1, column=5).value = "SSN"
+  sheet_out.cell(row=1, column=6).value = "State"
 
-       #  Write CSV header only if the current file has atleast one input row
-       if sheet.max_row > 1:
-         writer.writerow(["Emp ID", "First Name",
-                          "Last Name", "DOB", "SSN", "State"])
+#  Initialize ssn list
+ssn_list = []
 
-       #  Initialize ssn list
-       ssn_list = []
-
-       #  Step thru each row of CSV file
-       for row in range(2, sheet.max_row + 1):
-         emp_id = sheet['A' + str(row)].value
-         name = sheet['B' + str(row)].value
-         dob = sheet['C' + str(row)].value
-         ssn = sheet['D' + str(row)].value
-         state = sheet['E' + str(row)].value
-         ssn_list = ssn.split("-")
-         state = state.strip()
-         #  print(gen_row(emp_id, name, dob, ssn_list[2], state))
-         writer.writerow(gen_row(emp_id, name, dob, ssn_list[2], state))
-
+#  Step thru each row of CSV file
+for row in range(2, sheet.max_row + 1):
+  emp_id = sheet['A' + str(row)].value
+  name = sheet['B' + str(row)].value
+  name_part = name.strip().split()
+  dob = sheet['C' + str(row)].value
+  ssn = sheet['D' + str(row)].value
+  state = sheet['E' + str(row)].value
+  ssn_list = ssn.split("-")
+  state = state.strip()
+  #  print(gen_row(emp_id, name, dob, ssn_list[2], state))
+  sheet_out.cell(row=row, column=1).value = emp_id
+  sheet_out.cell(row=row, column=2).value = name_part[0]
+  sheet_out.cell(row=row, column=3).value = name_part[1]
+  sheet_out.cell(row=row, column=4).value = dob
+  sheet_out.cell(row=row, column=5).value = "***-**-" + ssn_list[2]
+  sheet_out.cell(row=row, column=6).value = state
+wb_out.save('processed_xlsx_emp_data.xlsx')
