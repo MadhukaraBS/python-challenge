@@ -73,6 +73,8 @@ def gen_row(emp_id, name, fmt_date, ssn_part, state):
 wb = openpyxl.load_workbook('employee_data.xlsx')
 wb_out = openpyxl.Workbook()
 sheet = wb['employee_data']
+std = wb_out['Sheet']
+wb_out.remove(std)
 sheet_out = wb_out.create_sheet('employee_data')
 #  Following API is deprecated
 #  sheet = wb.get_sheet_by_name('employee_data')
@@ -103,7 +105,7 @@ for row in range(2, sheet.max_row + 1):
   sheet_out.cell(row=row, column=1).value = emp_id
   sheet_out.cell(row=row, column=2).value = name_part[0]
   sheet_out.cell(row=row, column=3).value = name_part[1]
-  sheet_out.cell(row=row, column=4).value = dob
+  sheet_out.cell(row=row, column=4).value = dob.strftime('%m/%d/%Y')
   sheet_out.cell(row=row, column=5).value = "***-**-" + ssn_list[2]
-  sheet_out.cell(row=row, column=6).value = state
+  sheet_out.cell(row=row, column=6).value = us_state_abbrev[state]
 wb_out.save('processed_xlsx_emp_data.xlsx')
