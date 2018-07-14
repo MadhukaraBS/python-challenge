@@ -1,6 +1,7 @@
 import sys
 import csv
 from datetime import datetime
+import openpyxl
 
 # State name to abbreviation mapping table
 us_state_abbrev = {
@@ -68,18 +69,18 @@ def gen_row(emp_id, name, fmt_date, ssn_part, state):
 
 
 #  open data file and output file
-with open("employee_data.csv", 'r', encoding="utf8") as infile, \
-     open("processed_emp_data.csv", 'w', newline="") as outfile:
-     #  Without newline="" csvwriter writes \r\r\n for every \n
+#  Open XLSX file
+wb = openpyxl.load_workbook('employee_data.xlsx')
+sheet = wb['employee_data']
+#  Following API is deprecated
+#  sheet = wb.get_sheet_by_name('employee_data')
 
-       reader = csv.reader(infile, delimiter=",")
+#  Without newline="" csvwriter writes \r\r\n for every \n
+with open("processed_xlsx_emp_data.csv", 'w', newline="") as outfile:
        writer = csv.writer(outfile)
 
-       #  Read the header row first (skip this step if there is no header)
-       csv_header = next(reader)
-
        #  Write CSV header only if the current file has atleast one input row
-       if csv_header:
+       if sheet.max_row > 1:
          writer.writerow(["Emp ID", "First Name",
                           "Last Name", "DOB", "SSN", "State"])
 
@@ -87,16 +88,14 @@ with open("employee_data.csv", 'r', encoding="utf8") as infile, \
        ssn_list = []
 
        #  Step thru each row of CSV file
-       for row in reader:
-         # Do not process empty line in CSV file
-         if row:
-           #  Extract values from a tuple
-           emp_id, name, dob, ssn, state = row
-           ssn_list = ssn.split("-")
-           state = state.strip()
-           fmt_date = datetime.strptime(dob, "%Y-%m-%d")
-           writer.writerow(gen_row(emp_id, name, fmt_date, ssn_list[2], state))
-         # else:
-           # print("Empty line")
+       for row in range(2, sheet.max_row + 1):
+         emp_id = sheet['A' + str(row)].value
+         name = sheet['B' + str(row)].value
+         dob = sheet['C' + str(row)].value
+         ssn = sheet['D' + str(row)].value
+         state = sheet['E' + str(row)].value
+         ssn_list = ssn.split("-")
+         state = state.strip()
+         #  print(gen_row(emp_id, name, dob, ssn_list[2], state))
+         writer.writerow(gen_row(emp_id, name, dob, ssn_list[2], state))
 
-#
